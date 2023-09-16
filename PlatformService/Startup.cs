@@ -8,32 +8,54 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using PlatformService.Data;
+using PlatformService.SyncDataServices.Http;
 using System;
 
 namespace PlatformService
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
 
+        private readonly IWebHostEnvironment _env;
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMem"));
+            if (_env.IsProduction())
+            {
+                Console.WriteLine("--> Using SqlServer DB");
+                services.AddDbContext<AppDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                );
+            }
+            else
+            {
+                Console.WriteLine("--> Using InMem DB");
+                services.AddDbContext<AppDbContext>(options =>
+                    options.UseInMemoryDatabase("InMem")
+                );
+            }
+
+
             services.AddScoped<IPlatformRepo, PlatformRepo>();
+
+            services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
+
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo 
-                { 
-                    Title = "PlatformService", 
-                    Version = "v1" ,
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "PlatformService",
+                    Version = "v1",
                     Description = "An ASP.NET Core Web APIs",
                     TermsOfService = new Uri("https://example.com/terms"),
                     Contact = new OpenApiContact
@@ -42,7 +64,7 @@ namespace PlatformService
                         Url = new Uri("https://example.com/contact")
                     },
                     License = new OpenApiLicense
-                    { 
+                    {
                         Name = "Example License",
                         Url = new Uri("https://example.com/license")
                     }
@@ -63,7 +85,7 @@ namespace PlatformService
                 });
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -74,7 +96,7 @@ namespace PlatformService
                 endpoints.MapControllers();
             });
 
-            PrepDb.PrepPopulation(app);
+            PrepDb.PrepPopulation(app, env.IsProduction());
         }
     }
 }
