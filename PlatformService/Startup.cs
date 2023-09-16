@@ -54,9 +54,9 @@ namespace PlatformService
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "PlatformService",
                     Version = "v1",
-                    Description = "An ASP.NET Core Web APIs",
+                    Title = "PlatformService",
+                    Description = "An ASP.NET Core Web API for managin Platforms items",
                     TermsOfService = new Uri("https://example.com/terms"),
                     Contact = new OpenApiContact
                     {
