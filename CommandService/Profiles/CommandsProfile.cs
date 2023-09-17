@@ -10,6 +10,8 @@ namespace CommandService.Profiles
             CreateMap<Models.Command, Dtos.CommandReadDto>();
             CreateMap<Dtos.CommandCreateDto, Models.Command>();
             CreateMap<Models.Platform, Dtos.PlatformReadDto>();
+            CreateMap<Dtos.PlatformPublishedDto, Models.Platform>()
+                .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id));
         }
     }
 }

@@ -23,3 +23,8 @@
 1. `kubectl apply -f local-pvc.yaml`
 1. `kubectl apply -f mssql-plat-depl.yaml`
 1. `kubectl apply -f rabbitmq-depl.yaml`
+1. `dotnet add package RabbitMQ.Client`
+1. `dotnet add package Grpc.AspNetCore`
+1. `dotnet add package Grpc.Net.Client`
+1. `dotnet add package Grpc.Tools`
+1. `dotnet add package Google.Protobuf`
