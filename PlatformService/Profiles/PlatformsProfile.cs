@@ -8,6 +8,7 @@ namespace PlatformService.Profiles
         {
             CreateMap<Models.Platform, Dtos.PlatformReadDto>();
             CreateMap<Dtos.PlatformCreateDto, Models.Platform>();
+            CreateMap<Dtos.PlatformReadDto, Dtos.PlatformPublishedDto>();
         }
     }
 }

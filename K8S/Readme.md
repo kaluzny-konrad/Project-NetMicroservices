@@ -22,3 +22,4 @@
 1. `kubectl get secrets`
 1. `kubectl apply -f local-pvc.yaml`
 1. `kubectl apply -f mssql-plat-depl.yaml`
+1. `kubectl apply -f rabbitmq-depl.yaml`
