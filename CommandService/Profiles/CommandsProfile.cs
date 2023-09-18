@@ -12,6 +12,8 @@ namespace CommandService.Profiles
             CreateMap<Models.Platform, Dtos.PlatformReadDto>();
             CreateMap<Dtos.PlatformPublishedDto, Models.Platform>()
                 .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id));
+            CreateMap<PlatformService.GrpcPlatformModel, Models.Platform>()
+                .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.PlatformId));
         }
     }
 }

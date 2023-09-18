@@ -24,20 +24,27 @@ namespace CommandService.AsyncDataServices
 
         private void InitRabbitMQ()
         {
-            var factory = new ConnectionFactory()
+            try
             {
-                HostName = _configuration["RabbitMQHost"],
-                Port = int.Parse(_configuration["RabbitMQPort"])
-            };
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
-            _queueName = _channel.QueueDeclare().QueueName;
-            _channel.QueueBind(queue: _queueName, exchange: "trigger", routingKey: "");
+                var factory = new ConnectionFactory()
+                {
+                    HostName = _configuration["RabbitMQHost"],
+                    Port = int.Parse(_configuration["RabbitMQPort"])
+                };
+                _connection = factory.CreateConnection();
+                _channel = _connection.CreateModel();
+                _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
+                _queueName = _channel.QueueDeclare().QueueName;
+                _channel.QueueBind(queue: _queueName, exchange: "trigger", routingKey: "");
 
-            Console.WriteLine("--> Listening Event Bus...");
+                Console.WriteLine("--> Listening Event Bus...");
 
-            _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
+                _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"--> Rabbit Connection was not created");
+            }
         }
 
         private void RabbitMQ_ConnectionShutdown(object? sender, ShutdownEventArgs e)
